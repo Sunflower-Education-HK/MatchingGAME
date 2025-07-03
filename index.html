@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>釣字遊戲</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="game-container">
+    <div class="sky">
+      <img src="img/sun.png" class="sun" />
+    </div>
+    <div class="shore"></div>
+
+    <div class="fisherman">
+      <img src="img/Fishermen.png" alt="漁夫" />
+      <div class="speech-bubble" id="targetWord">目標字</div>
+    </div>
+
+    <div class="ocean" id="ocean"></div>
+    <div class="message" id="message"></div>
+
+    <audio id="successAudio" src="success-yue.mp3"></audio>
+    <audio id="failAudio" src="fail-yue.mp3"></audio>
+  </div>
+
+  <script src="word.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
