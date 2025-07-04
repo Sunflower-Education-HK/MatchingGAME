@@ -1,7 +1,21 @@
 body {
   margin: 0;
   font-family: "Arial", sans-serif;
-  background: #aee0f7;
+  background-image: url("img/background.png");
+  background-size: cover;     
+  background-repeat: no-repeat;   
+  background-position: center;        
+}
+
+.scoreboard {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fff;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 5px;
 }
 
 .game-container {
@@ -11,55 +25,51 @@ body {
   overflow: hidden;
 }
 
-.sky {
-  background: linear-gradient(to bottom, #87ceeb, #ffffff);
-  height: 30%;
-  text-align: right;
-  padding-top: 20px;
-}
-
-.sun {
-  width: 80px;
-  margin-right: 20px;
-}
-
-.fisherman {
-  display: flex;
-  position: absolute;
-  top: -8%;
-  left: 0%;
-  text-align: center;
-  align-items: center;
-  justify-content: center; /* 中間對齊 */
-}
-
-.fisherman img {
-  width: 300px;
-}
-
 .speech-bubble {
+  position: absolute;
+  top: 10px;
+  left: 71%;
+  transform: translateX(-50%);
   background: white;
-  border-radius: 10px;
-  padding: 10px;
-  margin-top: 5px;
+  border-radius: 50%;
+  padding: 40px 60px;
   font-weight: bold;
-  font-size: 32px;
+  font-size: 38px;
   box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  z-index: 10;
+  text-align: center;
 }
 
+.speech-bubble::before,
+.speech-bubble::after {
+  content: '';
+  position: absolute;
+  background: white;
+  border-radius: 50%;
+  z-index: -1;
+}
+
+.speech-bubble::after {
+  width: 40px;
+  height: 40px;
+  top: 100px;
+  right: -40px;
+}
+
+
+/* 魚群區域 */
 .ocean {
   position: absolute;
   bottom: 0;
   width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, #7ed8e2, #4ec3e0, #2a99b7, #18668c);
+  height: 60%;
   overflow: hidden;
-  position: relative;
 }
 
+/* 魚群動畫 */
 .fish-group {
   position: absolute;
-  animation: swim 4s infinite ease-in-out;
+  animation: swim 6s infinite ease-in-out;
 }
 
 .fish-img {
@@ -69,14 +79,13 @@ body {
 
 .fish {
   position: absolute;
-  top: 50%;
+  top: 55%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 28px;
+  font-size: 30px;
   font-weight: bold;
-  background: rgba(255, 217, 102, 0.85);
   border-radius: 20px;
-  padding: 5px 10px;
+  padding: 5px;
   cursor: pointer;
 }
 
@@ -94,14 +103,16 @@ body {
   color: #333;
 }
 
-.shore {
-  height: 2%;
-  width: 100%;
-  position: relative;
-}
-
-@keyframes swim {
+@keyframes swim-right {
   0% { transform: translateX(0); }
-  50% { transform: translateX(30px); }
+  80% { transform: translateX(30px) rotate(1deg); }
   100% { transform: translateX(0); }
 }
+
+@keyframes swim-left {
+  0% { transform: translateX(0); }
+  50% { transform: translateX(-30px) rotate(-1deg); }
+  100% { transform: translateX(0); }
+}
+
+

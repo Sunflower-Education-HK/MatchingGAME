@@ -1,31 +1,23 @@
 <!DOCTYPE html>
-<html lang="zh-HK">
+<html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>釣字遊戲</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <title>語言選擇</title>
+  <link rel="stylesheet" href="index.css">
 </head>
 <body>
   <div class="game-container">
-    <div class="sky">
-      <img src="img/sun.png" class="sun" />
+    <div class="center-container">
+      <img src="img/fish1.png" alt="魚1" class="fish-img" id="fish1">
+      
+      <button class="lang-button" onclick="location.href='chaMatchGame.html'">中文</button>
+      
+      <button class="lang-button" onclick="location.href='engMatchGame.html'">English</button>
+      
+      <img src="img/fish5.png" alt="魚5" class="fish-img" id="fish5">
     </div>
-    <div class="shore"></div>
-
-    <div class="fisherman">
-      <img src="img/Fishermen.png" alt="漁夫" />
-      <div class="speech-bubble" id="targetWord">目標字</div>
-    </div>
-
-    <div class="ocean" id="ocean"></div>
-    <div class="message" id="message"></div>
-
-    <audio id="successAudio" src="success-yue.mp3"></audio>
-    <audio id="failAudio" src="fail-yue.mp3"></audio>
   </div>
 
-  <script src="word.js"></script>
-  <script src="script.js"></script>
+  <script src="index.js"></script>
 </body>
 </html>

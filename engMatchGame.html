@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fishing game</title>
+  <link rel="stylesheet" href="engstyle.css" />
+</head>
+<body>
+<div class="scoreboard" id="scoreboard">Levels：1 / 40</div>
+  <div class="game-container">
+    <!-- 目標字 -->
+    <div class="speech-bubble" id="targetWord">targetWord</div>
+
+    <!-- 魚群區域 -->
+    <div class="ocean" id="ocean"></div>
+
+    <!-- 提示訊息 -->
+    <div class="message" id="message"></div>
+
+    <!-- 音效 -->
+    <audio id="successAudio" src="success-yue.mp3"></audio>
+    <audio id="failAudio" src="fail-yue.mp3"></audio>
+  </div>
+
+  <script src="engWord.js"></script>
+  <script src="engScript.js"></script>
+</body>
+</html>

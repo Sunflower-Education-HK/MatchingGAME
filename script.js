@@ -4,72 +4,119 @@ const targetWordDisplay = document.getElementById("targetWord");
 const successAudio = document.getElementById("successAudio");
 const failAudio = document.getElementById("failAudio");
 
-// 🔢 控制魚高度範圍（避免高過漁夫）
-const minTop = 20;
-const maxTop = 180;
+const oceanHeight = ocean.offsetHeight;
+const minTop = oceanHeight * 0.1;
+const maxTop = oceanHeight * 0.65;
+const usedTops = [90]; 
 
-// 🧠 抽出隨機字詞
+// 隨機抽字詞
 function getRandomWords(pool, count) {
   const shuffled = [...pool].sort(() => 0.5 - Math.random());
   return shuffled.slice(0, count);
 }
 
-// 🎮 初始化遊戲
+// 避免魚重疊
+function getNonOverlappingTop() {
+  let top;
+  let attempts = 0;
+  do {
+    top = Math.floor(Math.random() * (maxTop - minTop)) + minTop;
+    attempts++;
+  } while (usedTops.some(t => Math.abs(t - top) < 40) && attempts < 100);
+  usedTops.push(top);
+  return top;
+}
+
+// 魚來回游動動畫
+function animateFish(fishGroup, direction = 1) {
+  let posX = parseFloat(fishGroup.style.left) || 0;
+  const speed = 0.5 + Math.random() * 1.5;
+  const maxX = window.innerWidth - 200;
+
+  function move() {
+    posX += speed * direction;
+    fishGroup.style.left = posX + "px";
+
+    if (posX <= 0 || posX >= maxX) {
+      direction *= -1;
+      const fishImg = fishGroup.querySelector("img");
+      if (fishImg) {
+        fishImg.style.transform = direction === 1 ? "scaleX(1)" : "scaleX(-1)";
+      }
+    }
+
+    fishGroup.dataset.direction = direction;
+    fishGroup._animationFrame = requestAnimationFrame(move);
+  }
+
+  move();
+}
+
+// 初始化遊戲
+let currentLevel = 1;
+const maxLevel = 40;
+
 function initGame() {
-  const selectedWords = getRandomWords(wordPool, 5);
+  const selectedWords = getRandomWords(wordPool, 4);
   const correctWord = selectedWords[Math.floor(Math.random() * selectedWords.length)];
   targetWordDisplay.textContent = correctWord;
-  ocean.innerHTML = ""; // 清空上一次魚群
+  document.getElementById("scoreboard").textContent = `關卡：${currentLevel} / ${maxLevel}`;
+  ocean.innerHTML = "";
+  usedTops.length = 0;
 
-  selectedWords.forEach(word => {
+  selectedWords.forEach((word, index) => {
     const fishGroup = document.createElement("div");
     fishGroup.classList.add("fish-group");
 
-    // 🎲 隨機位置（左右 & 高度）
-    const top = Math.floor(Math.random() * (maxTop - minTop)) + minTop;
+    const top = getNonOverlappingTop();
     const left = Math.floor(Math.random() * (window.innerWidth - 200));
-
     fishGroup.style.top = top + "px";
     fishGroup.style.left = left + "px";
     fishGroup.style.position = "absolute";
 
-    // 🐠 加入魚圖
     const fishImg = document.createElement("img");
-    fishImg.src = "img/fish1.png"; // 或你可以根據word選用fish2.png
+    fishImg.src = `img/fish${index + 1}.png`; // ✅ 每條魚用不同圖
     fishImg.className = "fish-img";
 
-    // 🏷 加入文字標籤
     const fishLabel = document.createElement("div");
     fishLabel.className = "fish";
     fishLabel.setAttribute("data-word", word);
     fishLabel.textContent = word;
 
-    // 🧩 組合成魚群
     fishGroup.appendChild(fishImg);
     fishGroup.appendChild(fishLabel);
     ocean.appendChild(fishGroup);
 
-    // 🔍 點擊事件
+    const initialDirection = Math.random() > 0.5 ? 1 : -1;
+    if (initialDirection === -1) {
+      fishImg.style.transform = "scaleX(-1)";
+    }
+    animateFish(fishGroup, initialDirection);
+
     fishLabel.addEventListener("click", () => {
       if (word === correctWord) {
         message.textContent = "釣到啦！";
         successAudio.play();
 
-        const fishermanImg = document.querySelector(".fisherman img");
-        const fisherRect = fishermanImg.getBoundingClientRect();
-        const groupRect = fishGroup.getBoundingClientRect();
+        cancelAnimationFrame(fishGroup._animationFrame);
+        fishGroup.style.transition = "opacity 0.8s ease-out";
+        fishGroup.style.opacity = "0";
 
-        const newLeft = fisherRect.left + fisherRect.width / 2 - groupRect.width / 2;
-        const newTop = fisherRect.top + fisherRect.height / 2 - groupRect.height / 2;
+        setTimeout(() => {
+          fishGroup.remove();
+          message.textContent = "";
 
-        fishGroup.style.transition = "all 1s ease-in-out";
-        fishGroup.style.left = newLeft + "px";
-        fishGroup.style.top = newTop + "px";
+          if (currentLevel < maxLevel) {
+            currentLevel++;
+            initGame();
+          } else {
+            message.textContent = "🎉 恭喜完成所有關卡！";
+          }
+        }, 800);
       } else {
         message.textContent = "再試下～";
         failAudio.play();
-        fishLabel.style.backgroundColor = "#f08080";
-
+        fishLabel.style.backgroundColor = "#DC143C";
         setTimeout(() => {
           fishLabel.style.backgroundColor = "";
           message.textContent = "";
@@ -78,6 +125,4 @@ function initGame() {
     });
   });
 }
-
-// 🚀 開始遊戲
 initGame();
