@@ -1,16 +1,19 @@
 <!DOCTYPE html>
 <html lang="zh-HK">
+
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>釣字遊戲</title>
   <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-<div class="scoreboard" id="scoreboard">關卡：1 / 40</div>
+  <div class="scoreboard" id="scoreboard">關卡：1 / 40</div>
   <div class="game-container">
     <!-- 目標字（仍然顯示） -->
-    <div class="speech-bubble" id="targetWord">目標字</div>
+    <div class="speech-bubble" id="targetWord">targetWord</div>
+    <button id="replayBtn" class="replay-button">🔊聽一下</button>
 
     <!-- 魚群區域 -->
     <div class="ocean" id="ocean"></div>
@@ -26,4 +29,5 @@
   <script src="word.js"></script>
   <script src="script.js"></script>
 </body>
+
 </html>

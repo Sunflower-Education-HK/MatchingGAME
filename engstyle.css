@@ -2,9 +2,9 @@ body {
   margin: 0;
   font-family: "Arial", sans-serif;
   background-image: url("img/background.png");
-  background-size: cover;     
-  background-repeat: no-repeat;   
-  background-position: center;        
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
 }
 
 .scoreboard {
@@ -32,10 +32,10 @@ body {
   transform: translateX(-50%);
   background: white;
   border-radius: 50%;
-  padding: 40px 60px;
+  padding: 60px 80px;
   font-weight: bold;
   font-size: 32px;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
   z-index: 10;
   text-align: center;
 }
@@ -103,16 +103,47 @@ body {
   color: #333;
 }
 
+.replay-button {
+  position: absolute;
+  top: 40px;
+  left: 71%;
+  transform: translateX(-50%);
+  font-size: 30px;
+  padding: 10px;
+  border-radius: 50%;
+  cursor: pointer;
+  background-color: #fff;
+  border: none;
+  /* 去掉外框 */
+  z-index: 11;
+  /* 加這行 */
+}
+
+
 @keyframes swim-right {
-  0% { transform: translateX(0); }
-  80% { transform: translateX(30px) rotate(1deg); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+
+  80% {
+    transform: translateX(30px) rotate(1deg);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
 
 @keyframes swim-left {
-  0% { transform: translateX(0); }
-  50% { transform: translateX(-30px) rotate(-1deg); }
-  100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+
+  50% {
+    transform: translateX(-30px) rotate(-1deg);
+  }
+
+  100% {
+    transform: translateX(0);
+  }
 }
-
-
