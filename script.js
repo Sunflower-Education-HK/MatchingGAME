@@ -4,18 +4,37 @@ const targetWordDisplay = document.getElementById("targetWord");
 const successAudio = document.getElementById("successAudio");
 const failAudio = document.getElementById("failAudio");
 const replayBtn = document.getElementById("replayBtn");
+const scoreboard = document.getElementById("scoreboard");
 
 const oceanHeight = ocean.offsetHeight;
 const minTop = oceanHeight * 0.1;
 const maxTop = oceanHeight * 0.65;
-const usedTops = [90];
+const usedTops = [];
+
+let availableVoices = [];
+speechSynthesis.onvoiceschanged = () => {
+  availableVoices = speechSynthesis.getVoices();
+};
+
+function speakWord(word) {
+  const utterance = new SpeechSynthesisUtterance(word);
+  utterance.lang = "zh-HK";
+  utterance.rate = 1;
+  utterance.pitch = 0.5;
+
+  const femaleVoice = availableVoices.find(
+    voice => voice.lang === "zh-HK" && voice.name.toLowerCase().includes("female")
+  );
+  if (femaleVoice) utterance.voice = femaleVoice;
+
+  speechSynthesis.speak(utterance);
+}
 
 function getRandomWords(pool, count) {
-  const shuffled = [...pool].sort(() => 0.5 - Math.random());
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
 }
 
-// 避免魚重疊
 function getNonOverlappingTop() {
   let top;
   let attempts = 0;
@@ -27,7 +46,6 @@ function getNonOverlappingTop() {
   return top;
 }
 
-// 魚來回游動動畫
 function animateFish(fishGroup, direction = 1) {
   let posX = parseFloat(fishGroup.style.left) || 0;
   const speed = 0.5 + Math.random() * 1.5;
@@ -51,49 +69,36 @@ function animateFish(fishGroup, direction = 1) {
 
   move();
 }
-let availableVoices = [];
 
-speechSynthesis.onvoiceschanged = () => {
-  availableVoices = speechSynthesis.getVoices();
-};
-
-function speakWord(word) {
-  const utterance = new SpeechSynthesisUtterance(word);
-  utterance.lang = "zh-HK";
-  utterance.rate = 0.9;
-  utterance.pitch = 1;
-
-  const voices = speechSynthesis.getVoices();
-  const femaleVoice = voices.find(voice =>
-    voice.lang === "zh-HK" && voice.name.toLowerCase().includes("female")
-  );
-
-  if (femaleVoice) {
-    utterance.voice = femaleVoice;
-  }
-
-  speechSynthesis.speak(utterance);
-}
-
-
-// 初始化遊戲
 let currentLevel = 1;
-const maxLevel = 1;
+const maxLevel = 40;
+const usedCorrectWords = [];
 
 function initGame() {
-  const selectedWords = getRandomWords(wordPool, 4);
-  const correctWord = selectedWords[Math.floor(Math.random() * selectedWords.length)];
+  const unusedWords = wordPool.filter(w => !usedCorrectWords.includes(w));
+  if (unusedWords.length === 0 || currentLevel > maxLevel) {
+    showFinalMessage();
+    return;
+  }
+
+  const correctWord = unusedWords[Math.floor(Math.random() * unusedWords.length)];
+  usedCorrectWords.push(correctWord);
+
+  const distractors = wordPool.filter(w => w !== correctWord);
+  const distractorChoices = getRandomWords(distractors, 3);
+  const selectedWords = [...distractorChoices, correctWord];
+  const shuffledWords = getRandomWords(selectedWords, 4);
 
   targetWordDisplay.textContent = ""; // 不顯示文字
   targetWordDisplay.dataset.word = correctWord;
   speakWord(correctWord);
 
-  document.getElementById("scoreboard").textContent = `關卡：${currentLevel} / ${maxLevel}`;
+  scoreboard.textContent = `關卡：${currentLevel} / ${maxLevel}`;
   ocean.innerHTML = "";
   usedTops.length = 0;
   message.textContent = "";
 
-  selectedWords.forEach((word, index) => {
+  shuffledWords.forEach((word, index) => {
     const fishGroup = document.createElement("div");
     fishGroup.classList.add("fish-group");
 
@@ -117,16 +122,13 @@ function initGame() {
     ocean.appendChild(fishGroup);
 
     const initialDirection = Math.random() > 0.5 ? 1 : -1;
-    if (initialDirection === -1) {
-      fishImg.style.transform = "scaleX(-1)";
-    }
+    if (initialDirection === -1) fishImg.style.transform = "scaleX(-1)";
     animateFish(fishGroup, initialDirection);
 
     fishLabel.addEventListener("click", () => {
       if (word === correctWord) {
         message.textContent = "釣到啦！";
         successAudio.play();
-
         cancelAnimationFrame(fishGroup._animationFrame);
         fishGroup.style.transition = "opacity 0.8s ease-out";
         fishGroup.style.opacity = "0";
@@ -134,13 +136,8 @@ function initGame() {
         setTimeout(() => {
           fishGroup.remove();
           message.textContent = "";
-
-          if (currentLevel < maxLevel) {
-            currentLevel++;
-            initGame();
-          } else {
-            showFinalMessage();
-          }
+          currentLevel++;
+          initGame();
         }, 800);
       } else {
         message.textContent = "再試下～";
@@ -155,7 +152,6 @@ function initGame() {
   });
 }
 
-// 顯示完成畫面與跳轉按鈕
 function showFinalMessage() {
   message.innerHTML = "";
 
@@ -198,13 +194,11 @@ function showFinalMessage() {
   message.appendChild(messageBox);
 }
 
-// 「再聽一次」按鈕功能
+// 🔊 再聽一次
 replayBtn.addEventListener("click", () => {
   const word = targetWordDisplay.dataset.word;
-  if (word) {
-    speakWord(word);
-  }
+  if (word) speakWord(word);
 });
 
-// 啟動遊戲
+// 🚀 啟動
 initGame();

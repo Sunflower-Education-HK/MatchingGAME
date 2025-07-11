@@ -3,19 +3,32 @@ const message = document.getElementById("message");
 const targetWordDisplay = document.getElementById("targetWord");
 const successAudio = document.getElementById("successAudio");
 const failAudio = document.getElementById("failAudio");
+const replayBtn = document.getElementById("replayBtn");
+const scoreboard = document.getElementById("scoreboard");
 
 const oceanHeight = ocean.offsetHeight;
 const minTop = oceanHeight * 0.1;
 const maxTop = oceanHeight * 0.65;
-const usedTops = [90];
+const usedTops = [];
 
-// 隨機抽字詞
+let availableVoices = [];
+speechSynthesis.onvoiceschanged = () => {
+  availableVoices = speechSynthesis.getVoices();
+};
+
+function speakWord(word) {
+  const utterance = new SpeechSynthesisUtterance(word);
+  utterance.lang = "en-US";
+  utterance.rate = 0.8;
+  utterance.pitch = 1;
+  speechSynthesis.speak(utterance);
+}
+
 function getRandomWords(pool, count) {
-  const shuffled = [...pool].sort(() => 0.5 - Math.random());
+  const shuffled = [...pool].sort(() => Math.random() - 0.5);
   return shuffled.slice(0, count);
 }
 
-// 避免魚重疊
 function getNonOverlappingTop() {
   let top;
   let attempts = 0;
@@ -27,7 +40,6 @@ function getNonOverlappingTop() {
   return top;
 }
 
-// 魚來回游動動畫
 function animateFish(fishGroup, direction = 1) {
   let posX = parseFloat(fishGroup.style.left) || 0;
   const speed = 0.5 + Math.random() * 1.5;
@@ -52,31 +64,35 @@ function animateFish(fishGroup, direction = 1) {
   move();
 }
 
-function speakWord(word) {
-  const utterance = new SpeechSynthesisUtterance(word);
-  utterance.lang = "en-US"; // 
-  utterance.rate = 0.8;
-  utterance.pitch = 1;
-  speechSynthesis.speak(utterance);
-}
-
-// 初始化遊戲
 let currentLevel = 1;
-const maxLevel = 2;
+const maxLevel = 40;
+const usedCorrectWords = [];
 
 function initGame() {
-  const selectedWords = getRandomWords(wordPool, 4);
-  const correctWord = selectedWords[Math.floor(Math.random() * selectedWords.length)];
+  const unusedWords = wordPool.filter(w => !usedCorrectWords.includes(w));
+  if (unusedWords.length === 0 || currentLevel > maxLevel) {
+    showFinalMessage();
+    return;
+  }
 
-  targetWordDisplay.textContent = ""; // 不顯示文字
-  targetWordDisplay.dataset.word = correctWord; // 儲存正確單字
-  speakWord(correctWord); // 播放語音
+  const correctWord = unusedWords[Math.floor(Math.random() * unusedWords.length)];
+  usedCorrectWords.push(correctWord);
 
-  document.getElementById("scoreboard").textContent = `Levels：${currentLevel} / ${maxLevel}`;
+  const distractors = wordPool.filter(w => w !== correctWord);
+  const distractorChoices = getRandomWords(distractors, 3);
+  const selectedWords = [...distractorChoices, correctWord];
+  const shuffledWords = getRandomWords(selectedWords, 4);
+
+  targetWordDisplay.textContent = "";
+  targetWordDisplay.dataset.word = correctWord;
+  speakWord(correctWord);
+
+  scoreboard.textContent = `Level: ${currentLevel} / ${maxLevel}`;
   ocean.innerHTML = "";
   usedTops.length = 0;
+  message.textContent = "";
 
-  selectedWords.forEach((word, index) => {
+  shuffledWords.forEach((word, index) => {
     const fishGroup = document.createElement("div");
     fishGroup.classList.add("fish-group");
 
@@ -100,16 +116,13 @@ function initGame() {
     ocean.appendChild(fishGroup);
 
     const initialDirection = Math.random() > 0.5 ? 1 : -1;
-    if (initialDirection === -1) {
-      fishImg.style.transform = "scaleX(-1)";
-    }
+    if (initialDirection === -1) fishImg.style.transform = "scaleX(-1)";
     animateFish(fishGroup, initialDirection);
 
     fishLabel.addEventListener("click", () => {
       if (word === correctWord) {
         message.textContent = "Caught it!";
         successAudio.play();
-
         cancelAnimationFrame(fishGroup._animationFrame);
         fishGroup.style.transition = "opacity 0.8s ease-out";
         fishGroup.style.opacity = "0";
@@ -117,59 +130,8 @@ function initGame() {
         setTimeout(() => {
           fishGroup.remove();
           message.textContent = "";
-
-          if (currentLevel < maxLevel) {
-            currentLevel++;
-            initGame();
-          } else {
-            message.innerHTML = "";
-
-            const messageBox = document.createElement("div");
-            messageBox.style.display = "flex";
-            messageBox.style.flexDirection = "column";
-            messageBox.style.alignItems = "center";
-
-            const congratsText = document.createElement("div");
-            congratsText.textContent = "🎉 Congratulations!";
-            congratsText.style.fontSize = "28px";
-            congratsText.style.marginBottom = "20px";
-            congratsText.style.textAlign = "center";
-
-            const nextLevelBtn = document.createElement("button");
-            nextLevelBtn.textContent = "Go to Level 2";
-            nextLevelBtn.style.padding = "10px 20px";
-            nextLevelBtn.style.fontSize = "18px";
-            nextLevelBtn.style.borderRadius = "10px";
-            nextLevelBtn.style.cursor = "pointer";
-            nextLevelBtn.style.backgroundColor = "#4CAF50";
-            nextLevelBtn.style.color = "white";
-            nextLevelBtn.style.border = "none";
-            nextLevelBtn.style.boxShadow = "2px 2px 5px rgba(0,0,0,0.2)";
-            nextLevelBtn.style.transition = "transform 0.2s";
-
-            nextLevelBtn.addEventListener("mouseover", () => {
-              nextLevelBtn.style.transform = "scale(1.05)";
-            });
-            nextLevelBtn.addEventListener("mouseout", () => {
-              nextLevelBtn.style.transform = "scale(1)";
-            });
-
-            nextLevelBtn.addEventListener("click", () => {
-              window.location.href = "chaLevel2.html";
-            });
-
-            // 加入畫面
-            messageBox.appendChild(congratsText);
-            messageBox.appendChild(nextLevelBtn);
-            message.appendChild(messageBox);
-
-
-            nextLevelBtn.addEventListener("click", () => {
-              window.location.href = "a.html";
-            });
-
-
-          }
+          currentLevel++;
+          initGame();
         }, 800);
       } else {
         message.textContent = "Try again~";
@@ -184,13 +146,53 @@ function initGame() {
   });
 }
 
-// 「再聽一次」按鈕功能
-document.getElementById("replayBtn").addEventListener("click", () => {
+function showFinalMessage() {
+  message.innerHTML = "";
+
+  const messageBox = document.createElement("div");
+  messageBox.style.display = "flex";
+  messageBox.style.flexDirection = "column";
+  messageBox.style.alignItems = "center";
+
+  const congratsText = document.createElement("div");
+  congratsText.textContent = "🎉 Congratulations!";
+  congratsText.style.fontSize = "28px";
+  congratsText.style.marginBottom = "20px";
+  congratsText.style.textAlign = "center";
+
+  const nextLevelBtn = document.createElement("button");
+  nextLevelBtn.textContent = "Go to Level 2";
+  nextLevelBtn.style.padding = "10px 20px";
+  nextLevelBtn.style.fontSize = "18px";
+  nextLevelBtn.style.borderRadius = "10px";
+  nextLevelBtn.style.cursor = "pointer";
+  nextLevelBtn.style.backgroundColor = "#4CAF50";
+  nextLevelBtn.style.color = "white";
+  nextLevelBtn.style.border = "none";
+  nextLevelBtn.style.boxShadow = "2px 2px 5px rgba(0,0,0,0.2)";
+  nextLevelBtn.style.transition = "transform 0.2s";
+
+  nextLevelBtn.addEventListener("mouseover", () => {
+    nextLevelBtn.style.transform = "scale(1.05)";
+  });
+  nextLevelBtn.addEventListener("mouseout", () => {
+    nextLevelBtn.style.transform = "scale(1)";
+  });
+
+  nextLevelBtn.addEventListener("click", () => {
+    window.location.href = "chaLevel2.html";
+  });
+
+  messageBox.appendChild(congratsText);
+  messageBox.appendChild(nextLevelBtn);
+  message.appendChild(messageBox);
+}
+
+// 🔊 Replay Button
+replayBtn.addEventListener("click", () => {
   const word = targetWordDisplay.dataset.word;
-  if (word) {
-    speakWord(word);
-  }
+  if (word) speakWord(word);
 });
 
-// 啟動遊戲
+// 🐟 Start the game
 initGame();

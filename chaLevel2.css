@@ -1,93 +1,22 @@
 body {
   margin: 0;
   font-family: "Arial", sans-serif;
-  background-image: url("img/.png");
-  background-size: cover;
-  background-position: center;
+  background-color: #f7f7f7;
   overflow: hidden;
+  background-image: url("img/l2bg.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+
 }
 
 .game-container {
-  position: relative;
   width: 100%;
   height: 100vh;
-}
-
-.sky {
-  position: absolute;
-  top: 50px;
-  width: 100%;
+  position: relative;
   display: flex;
-  justify-content: space-around;
-  z-index: 2;
-}
-
-.word-option {
-  background-color: #fff8dc;
-  border: 2px solid #ccc;
-  padding: 10px 20px;
-  font-size: 24px;
-  border-radius: 10px;
-  cursor: pointer;
-  box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
-  transition: transform 0.2s;
-}
-
-.word-option:hover {
-  transform: scale(1.1);
-}
-
-.track {
-  position: absolute;
-  bottom: 100px;
-  width: 100%;
-  text-align: center;
-}
-
-.sentence {
-  font-size: 32px;
-  margin-bottom: 20px;
-}
-
-#blank {
-  display: inline-block;
-  width: 120px;
-  border-bottom: 2px dashed #333;
-  text-align: center;
-}
-
-.train {
-  width: 200px;
-  transition: transform 1.5s ease-out;
-}
-
-#replayBtn {
-  position: absolute;
-  bottom: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 20px;
-  padding: 10px 20px;
-  background-color: #ffecb3;
-  border: 2px solid #fbc02d;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
-.message {
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 28px;
-  font-weight: bold;
-  color: #333;
-  text-align: center;
-}
-
-#blank.drag-over {
-  background-color: #e0f7fa;
-  border-bottom: 2px solid #00796b;
+  flex-direction: column;
+  align-items: center;
 }
 
 #progressTracker {
@@ -99,18 +28,148 @@ body {
   background-color: rgba(255, 255, 255, 0.8);
   padding: 6px 12px;
   border-radius: 8px;
-  box-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
   z-index: 10;
 }
 
-@keyframes shake {
-  0% { transform: translateX(0); }
-  25% { transform: translateX(-5px); }
-  50% { transform: translateX(5px); }
-  75% { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
+.sky {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  gap: 30px;
 }
 
-.blank-error {
-  animation: shake 0.3s ease;
+.word-option {
+  background-color: #fff8dc;
+  border: 2px solid #ccc;
+  padding: 10px 20px;
+  font-size: 24px;
+  border-radius: 10px;
+  cursor: grab;
+  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s;
 }
+
+.word-option:hover {
+  transform: scale(1.1);
+}
+
+.track {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.c-car {
+  position: relative;
+  display: inline-block;
+}
+
+.c-car img {
+  width: 550px;
+
+}
+
+.c-text {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 34px;
+  font-weight: bold;
+  color: #333;
+  pointer-events: none;
+}
+
+.drag-over {
+  background-color: #e0f7fa;
+  border-radius: 8px;
+}
+
+#replayBtn {
+  margin-top: 10px;
+  font-size: 20px;
+  padding: 10px 20px;
+  background-color: #ffecb3;
+  border: 2px solid #fbc02d;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+.train {
+  margin-top: 40px;
+  width: 400px;
+  transition: transform 1.5s ease-out;
+}
+
+.message {
+  margin-top: 30px;
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+.track-sentence {
+  margin-top: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+}
+
+.car-with-image {
+  position: relative;
+  display: inline-block;
+}
+
+.car-with-image img {
+  width: 550px;
+}
+
+.car-text {
+  position: absolute;
+  top: -20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 34px;
+  font-weight: bold;
+  color: #333;
+  pointer-events: none;
+}
+
+.blank {
+  font-size: 36px;
+  font-weight: bold;
+  color: #333;
+  min-width: 120px;
+  border-bottom: 2px dashed #999;
+  text-align: center;
+  padding: 10px;
+  margin-top: 40px;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.blank.drag-over {
+  background-color: #e0f7fa;
+  border-radius: 8px;
+}
+#part2 {
+  min-width: 160px;     /* 擴大感應寬度 */
+  min-height: 40px;     /* 擴大感應高度 */
+  display: inline-block;
+  border-bottom: 2px dashed #999;
+  padding: 10px;
+  text-align: center;
+  vertical-align: middle;
+  line-height: 40px;
+  cursor: pointer;
+  font-size: 36px;
+}
+#part2.drag-over {
+  background-color: #e0f7fa;
+  border-radius: 8px;
+}
+
