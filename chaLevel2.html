@@ -11,31 +11,36 @@
 <body>
   <div class="game-container">
     <div id="progressTracker">完成：0 / 0</div>
-        <button id="replayBtn">🔊 再聽一次</button>
+     <div class="top-controls">
+      <button id="replayBtn">🔊 再聽一次</button>
+    </div>
+
+        <img src="img/train.png" alt="train" class="train" id="train" />
 
     <div class="sky">
-      <div class="word-option" data-word="">詞語1</div>
-      <div class="word-option" data-word="">詞語2</div>
-      <div class="word-option" data-word="">詞語3</div>
-      <div class="word-option" data-word="">詞語4</div>
+      <div class="word-option" data-word=""><img src="img/b.png" /><div class="word-label">詞語1</div></div>
+      <div class="word-option" data-word=""><img src="img/b.png" /><div class="word-label">詞語2</div></div>
+      <div class="word-option" data-word=""><img src="img/b.png" /><div class="word-label">詞語3</div></div>
+      <div class="word-option" data-word=""><img src="img/b.png" /><div class="word-label">詞語4</div></div>
     </div>
-    <img src="img/train.png" alt="train" class="train" id="train" />
 
-<div class="track">
-  <div class="c-car">
-    <img src="img/C.png" />
-    <div class="c-text" id="part1"></div>
-  </div>
-<div class="c-car" id="car2">
-  <img src="img/C.png" id="car2Img" style="visibility: hidden;" />
-  <div class="c-text" id="part2" ondrop="drop(event)" ondragover="allowDrop(event)">______</div>
-</div>
 
-  <div class="c-car">
-    <img src="img/C.png" />
-    <div class="c-text" id="part3"></div>
-  </div>
-</div>
+    <div class="track">
+      <div class="c-car">
+        <img src="img/c.png" />
+        <div class="c-text" id="part1"></div>
+      </div>
+
+      <div class="c-car" id="car2">
+        <img src="img/c.png" id="car2Img" />
+        <div class="c-dropzone" id="part2" ondrop="drop(event)" ondragover="allowDrop(event)"></div>
+      </div>
+
+      <div class="c-car">
+        <img src="img/c.png" />
+        <div class="c-text" id="part3"></div>
+      </div>
+    </div>
 
     <div class="message" id="message"></div>
 
@@ -46,5 +51,4 @@
   <script src="level2Data.js"></script>
   <script src="chaLevel2.js"></script>
 </body>
-
 </html>

@@ -13,39 +13,39 @@ const car2Img = document.getElementById("car2Img");
 let currentIndex = 0;
 let correctCount = 0;
 const totalQuestions = level2Sentences.length;
-const passThreshold = Math.ceil(totalQuestions * 0.8); // 通關門檻：80%
+const passThreshold = Math.ceil(totalQuestions * 0.8);
 
 function initGame() {
   const sentence = level2Sentences[currentIndex];
 
-  // 初始化句子文字
+  // Set sentence parts
   part1.textContent = sentence.part1;
-  part2.textContent = "______";
+  part2.textContent = ""; // drop zone
   part2.style.color = "#333";
-  part2.style.fontWeight = "bold";
   part3.textContent = sentence.part3;
 
-  // 隱藏中間車廂圖、重置火車位置
+  // Reset visuals
   car2Img.style.visibility = "hidden";
   train.style.transform = "translateX(0)";
-
-  // 更新進度與訊息
-  progressTracker.textContent = `關卡：${correctCount} / ${totalQuestions}`;
   message.textContent = "";
+  progressTracker.textContent = `關卡：${currentIndex + 1} / ${totalQuestions}`;
 
-  // 初始化詞語選項
+  if (currentIndex === 0) {
+  message.innerHTML = "👋 嘩～準備好搭語文小火車未？拖啱詞語就可以開車喇～！";
+}
+
+
+  // Update options
   wordOptions.forEach((el, i) => {
-    el.textContent = sentence.options[i];
+    el.querySelector(".word-label").textContent = sentence.options[i];
     el.dataset.word = sentence.options[i];
-    el.style.backgroundColor = "#fff8dc";
-
     el.setAttribute("draggable", true);
     el.ondragstart = (e) => {
-      e.dataTransfer.setData("text", el.dataset.word);
+      e.dataTransfer.setData("text", sentence.options[i]);
     };
-    el.onclick = null;
   });
 
+  // Speak the sentence immediately
   speakSentence(sentence);
 }
 
@@ -55,6 +55,7 @@ function speakSentence(sentence) {
   );
   utterance.lang = "zh-HK";
   utterance.rate = 0.9;
+  speechSynthesis.cancel(); // stop any ongoing speech
   speechSynthesis.speak(utterance);
 }
 
@@ -70,13 +71,15 @@ function drop(event) {
   const word = event.dataTransfer.getData("text");
   const sentence = level2Sentences[currentIndex];
 
+  part2.textContent = word;
+  part2.style.color = "#333";
+
   if (word === sentence.part2) {
-    // 答對：顯示車廂圖 + 火車移動
-    part2.textContent = word;
-    part2.style.color = "#333";
     car2Img.style.visibility = "visible";
-    train.style.transform = "translateX(500px)";
+    train.style.transform = `translateX(${window.innerWidth - 350}px)`;
+    trainSound.currentTime = 0;
     trainSound.play();
+
     correctCount++;
 
     setTimeout(() => {
@@ -88,39 +91,32 @@ function drop(event) {
       }
     }, 1500);
   } else {
-    // 答錯：提示紅字，車廂不顯示
-    part2.textContent = word;
     part2.style.color = "crimson";
-    part2.style.fontWeight = "bold";
     failSound.play();
     train.style.transform = "translateX(0)";
 
     setTimeout(() => {
-      part2.textContent = "______";
+      part2.textContent = "";
       part2.style.color = "#333";
-      part2.style.fontWeight = "bold";
     }, 1500);
   }
 }
 
 function showFinalMessage() {
+  // ✅ Only show message after ALL questions answered
   if (correctCount >= passThreshold) {
-    message.innerHTML = `🎉 你完成了 ${correctCount} / ${totalQuestions} 題，成功過關！`;
+    message.innerHTML = `🎉 恭喜完成所有題目！你答啱咗 ${correctCount} / ${totalQuestions} 題，成功過關！`;
   } else {
-    message.innerHTML = `😢 你只完成了 ${correctCount} / ${totalQuestions} 題，未能過關。`;
+    message.innerHTML = `😢 你完成咗所有題目，但只答啱 ${correctCount} / ${totalQuestions} 題，未能過關。`;
   }
 }
 
-// 再聽一次按鈕
 replayBtn.addEventListener("click", () => {
   const sentence = level2Sentences[currentIndex];
   speakSentence(sentence);
 });
 
-// 設定拖放區（保險）
 part2.addEventListener("drop", drop);
 part2.addEventListener("dragover", allowDrop);
 
-
-// 啟動遊戲
 initGame();

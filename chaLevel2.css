@@ -1,13 +1,8 @@
 body {
   margin: 0;
   font-family: "Arial", sans-serif;
-  background-color: #f7f7f7;
+  background: url("img/l2bg.png") center/cover no-repeat;
   overflow: hidden;
-  background-image: url("img/l2bg.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  background-position: center;
-
 }
 
 .game-container {
@@ -25,7 +20,7 @@ body {
   left: 20px;
   font-size: 20px;
   font-weight: bold;
-  background-color: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.8);
   padding: 6px 12px;
   border-radius: 8px;
   box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
@@ -33,33 +28,48 @@ body {
 }
 
 .sky {
-  margin-top: 50px;
+  position: absolute;
+  top: 10px;        /* ✅ 跟你要求放最上方 */
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   justify-content: center;
-  gap: 30px;
+  gap: 20px;
+  z-index: 3;
 }
+
 
 .word-option {
-  background-color: #fff8dc;
-  border: 2px solid #ccc;
-  padding: 10px 20px;
-  font-size: 24px;
-  border-radius: 10px;
+  position: relative;
+  width: 300px;       
+  height: 155px;       
   cursor: grab;
-  box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-  transition: transform 0.2s;
 }
 
-.word-option:hover {
-  transform: scale(1.1);
+
+.word-option img {
+  width: 300px;
+  pointer-events: none;
+}
+
+.word-label {
+  position: absolute;
+  top: 50%;
+  left: 48%;
+  transform: translate(-50%, -50%);
+  font-size: 22px;       /* 可調整大小配合車廂尺寸 */
+  font-weight: bold;
+  color: #333;
+  pointer-events: none;
+  white-space: nowrap;
 }
 
 .track {
-  margin-top: 50px;
+  margin-top: 340px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 20px;
+  gap: 0px;
 }
 
 .c-car {
@@ -68,28 +78,53 @@ body {
 }
 
 .c-car img {
-  width: 550px;
-
+  width: 580px;
 }
 
 .c-text {
   position: absolute;
-  top: -20px;
+  top: 47%;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, -50%);
   font-size: 34px;
   font-weight: bold;
   color: #333;
+  text-align: center;
   pointer-events: none;
+  white-space: nowrap;
 }
 
-.drag-over {
+.c-dropzone {
+  position: absolute;
+  top: 47%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 30px;
+  font-weight: bold;
+  color: #333;
+  width: 160px;
+  height: 60px;
+  text-align: center;
+  line-height: 60px;
+  background-color: transparent;
+}
+
+.c-dropzone.drag-over {
   background-color: #e0f7fa;
   border-radius: 8px;
 }
 
+.train {
+  position: absolute;
+  bottom: 250px;
+  left: 0;
+  width: 720px;
+  transition: transform 1.5s ease-out;
+  z-index: 2;
+}
+
 #replayBtn {
-  margin-top: 10px;
+  margin-top: 15px;
   font-size: 20px;
   padding: 10px 20px;
   background-color: #ffecb3;
@@ -98,11 +133,34 @@ body {
   cursor: pointer;
 }
 
-.train {
-  margin-top: 40px;
-  width: 400px;
-  transition: transform 1.5s ease-out;
+.top-controls {
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  z-index: 10;
 }
+
+#progressTracker {
+  position: absolute;
+  top: 10px;
+  left: 20px;
+  font-size: 20px;
+  font-weight: bold;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 6px 12px;
+  border-radius: 8px;
+  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+  z-index: 10;
+}
+
+
+#replayBtn {
+  margin: 0; 
+}
+
 
 .message {
   margin-top: 30px;
@@ -111,65 +169,3 @@ body {
   color: #333;
   text-align: center;
 }
-.track-sentence {
-  margin-top: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  gap: 20px;
-}
-
-.car-with-image {
-  position: relative;
-  display: inline-block;
-}
-
-.car-with-image img {
-  width: 550px;
-}
-
-.car-text {
-  position: absolute;
-  top: -20px;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 34px;
-  font-weight: bold;
-  color: #333;
-  pointer-events: none;
-}
-
-.blank {
-  font-size: 36px;
-  font-weight: bold;
-  color: #333;
-  min-width: 120px;
-  border-bottom: 2px dashed #999;
-  text-align: center;
-  padding: 10px;
-  margin-top: 40px;
-  background-color: transparent;
-  cursor: pointer;
-}
-
-.blank.drag-over {
-  background-color: #e0f7fa;
-  border-radius: 8px;
-}
-#part2 {
-  min-width: 160px;     /* 擴大感應寬度 */
-  min-height: 40px;     /* 擴大感應高度 */
-  display: inline-block;
-  border-bottom: 2px dashed #999;
-  padding: 10px;
-  text-align: center;
-  vertical-align: middle;
-  line-height: 40px;
-  cursor: pointer;
-  font-size: 36px;
-}
-#part2.drag-over {
-  background-color: #e0f7fa;
-  border-radius: 8px;
-}
-
