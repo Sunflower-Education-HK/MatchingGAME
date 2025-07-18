@@ -1,7 +1,8 @@
 body {
   margin: 0;
   font-family: "Arial", sans-serif;
-  background: url("img/l2bg.png") center/cover no-repeat;
+  background: url("img/l2bg.png") no-repeat center center;
+  background-size: cover;
   overflow: hidden;
 }
 
@@ -29,35 +30,33 @@ body {
 
 .sky {
   position: absolute;
-  top: 10px;        /* ✅ 跟你要求放最上方 */
+  top: 10px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 0px;
   z-index: 3;
 }
 
-
 .word-option {
   position: relative;
-  width: 300px;       
-  height: 155px;       
+  width: 390px;
+  height: 205px;
   cursor: grab;
 }
 
-
 .word-option img {
-  width: 300px;
+  width: 400px;
   pointer-events: none;
 }
 
 .word-label {
   position: absolute;
   top: 50%;
-  left: 48%;
+  left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 22px;       /* 可調整大小配合車廂尺寸 */
+  font-size: 30px;
   font-weight: bold;
   color: #333;
   pointer-events: none;
@@ -65,28 +64,30 @@ body {
 }
 
 .track {
-  margin-top: 340px;
+  margin-top: 350px;
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 0px;
+  gap: -50px; 
 }
 
 .c-car {
   position: relative;
   display: inline-block;
+  margin: 0;
 }
 
 .c-car img {
-  width: 580px;
+  width: 400px;
+  height: 310px;
 }
 
 .c-text {
   position: absolute;
-  top: 47%;
+  top: 45%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 34px;
+  font-size: 35px;
   font-weight: bold;
   color: #333;
   text-align: center;
@@ -99,19 +100,21 @@ body {
   top: 47%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 30px;
+  font-size: 28px; /* 從 30px 減小，匹配縮小的路軌 */
   font-weight: bold;
   color: #333;
-  width: 160px;
-  height: 60px;
+  width: 120px; /* 從 160px 減小，適應縮小的路軌 */
+  height: 50px; /* 從 60px 減小 */
   text-align: center;
-  line-height: 60px;
+  line-height: 50px; /* 匹配 height */
   background-color: transparent;
+  border: 3px dashed #005555;
+  border-radius: 8px;
 }
 
 .c-dropzone.drag-over {
   background-color: #e0f7fa;
-  border-radius: 8px;
+  border: 3px solid #005555;
 }
 
 .train {
@@ -119,8 +122,20 @@ body {
   bottom: 250px;
   left: 0;
   width: 720px;
-  transition: transform 1.5s ease-out;
+  transition: transform 3s ease-out;
   z-index: 2;
+}
+
+@keyframes shakeTrain {
+  0% {
+    transform: translateX(0) rotate(0deg);
+  }
+  50% {
+    transform: translateX(5px) rotate(1deg);
+  }
+  100% {
+    transform: translateX(0) rotate(0deg);
+  }
 }
 
 #replayBtn {
@@ -142,25 +157,6 @@ body {
   gap: 15px;
   z-index: 10;
 }
-
-#progressTracker {
-  position: absolute;
-  top: 10px;
-  left: 20px;
-  font-size: 20px;
-  font-weight: bold;
-  background-color: rgba(255, 255, 255, 0.8);
-  padding: 6px 12px;
-  border-radius: 8px;
-  box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
-  z-index: 10;
-}
-
-
-#replayBtn {
-  margin: 0; 
-}
-
 
 .message {
   margin-top: 30px;
