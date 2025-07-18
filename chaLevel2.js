@@ -30,7 +30,6 @@ function initGame() {
   const answerIndex = sentence.possibleAnswers.indexOf(answerText);
   const options = sentence.options[answerText];
 
-  // 設置 part1, part2, part3, part4 的顯示
   part1.textContent = answerIndex === 0 ? "" : sentence.parts[0].text;
   part2.textContent = answerIndex === 1 ? "" : sentence.parts[1].text;
   part3.textContent = answerIndex === 2 ? "" : sentence.parts[2].text;
@@ -55,7 +54,6 @@ function initGame() {
   car3Img.style.visibility = answerIndex === 2 ? "hidden" : "visible";
   car4Img.style.visibility = answerIndex === 3 ? "hidden" : "visible";
 
-  // 重設畫面
   train.style.transition = "none";
   train.style.transform = "translateX(0)";
   setTimeout(() => {
@@ -64,7 +62,6 @@ function initGame() {
   message.textContent = "";
   progressTracker.textContent = `關卡：${currentIndex + 1} / ${totalQuestions}`;
 
-  // 生成詞語選項
   wordArea.innerHTML = "";
   options.forEach(word => {
     const option = document.createElement("div");
@@ -89,7 +86,6 @@ function initGame() {
     };
   });
 
-  // 設置語音
   const fullSentence = sentence.parts.map((part, index) => (index === answerIndex ? answerText : part.text)).join(" ");
   speakSentence({ part1: sentence.parts[0].text, part2: answerText, part3: sentence.parts[2].text, part4: sentence.parts[3].text });
 }
