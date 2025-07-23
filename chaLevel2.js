@@ -30,6 +30,7 @@ function initGame() {
   const answerIndex = sentence.possibleAnswers.indexOf(answerText);
   const options = sentence.options[answerText];
 
+  // 設置 part1, part2, part3, part4 的顯示
   part1.textContent = answerIndex === 0 ? "" : sentence.parts[0].text;
   part2.textContent = answerIndex === 1 ? "" : sentence.parts[1].text;
   part3.textContent = answerIndex === 2 ? "" : sentence.parts[2].text;
@@ -39,14 +40,14 @@ function initGame() {
   const dropZones = [part1, part2, part3, part4];
   dropZones.forEach((zone, index) => {
     zone.classList.remove("c-dropzone");
-    zone.removeAttribute("ondrop");
-    zone.removeAttribute("ondragover");
+    zone.removeEventListener("drop", drop);
+    zone.removeEventListener("dragover", allowDrop);
   });
   const dropZone = dropZones[answerIndex];
   dropZone.classList.add("c-dropzone");
-  dropZone.setAttribute("ondrop", "drop(event)");
-  dropZone.setAttribute("ondragover", "allowDrop(event)");
   dropZone.dataset.answer = answerText;
+  dropZone.addEventListener("drop", drop);
+  dropZone.addEventListener("dragover", allowDrop);
 
   // 控制路軌顯示
   car1Img.style.visibility = answerIndex === 0 ? "hidden" : "visible";
@@ -54,6 +55,7 @@ function initGame() {
   car3Img.style.visibility = answerIndex === 2 ? "hidden" : "visible";
   car4Img.style.visibility = answerIndex === 3 ? "hidden" : "visible";
 
+  // 重設畫面
   train.style.transition = "none";
   train.style.transform = "translateX(0)";
   setTimeout(() => {
@@ -62,6 +64,8 @@ function initGame() {
   message.textContent = "";
   progressTracker.textContent = `關卡：${currentIndex + 1} / ${totalQuestions}`;
 
+
+  // 生成詞語選項
   wordArea.innerHTML = "";
   options.forEach(word => {
     const option = document.createElement("div");
@@ -86,14 +90,12 @@ function initGame() {
     };
   });
 
-  const fullSentence = sentence.parts.map((part, index) => (index === answerIndex ? answerText : part.text)).join(" ");
-  speakSentence({ part1: sentence.parts[0].text, part2: answerText, part3: sentence.parts[2].text, part4: sentence.parts[3].text });
+  // 使用 fullSentence 進行語音播放
+  speakSentence(sentence);
 }
 
 function speakSentence(sentence) {
-  const utterance = new SpeechSynthesisUtterance(
-    `${sentence.part1} ${sentence.part2} ${sentence.part3} ${sentence.part4}`
-  );
+  const utterance = new SpeechSynthesisUtterance(sentence.fullSentence);
   utterance.lang = "zh-HK";
   utterance.rate = 0.9;
   speechSynthesis.cancel();
@@ -104,7 +106,10 @@ function speakSentence(sentence) {
 
 function allowDrop(event) {
   event.preventDefault();
-  event.target.closest(".c-dropzone").classList.add("drag-over");
+  const dropZone = event.target.closest(".c-dropzone");
+  if (dropZone) {
+    dropZone.classList.add("drag-over");
+  }
 }
 
 function drop(event) {
@@ -117,7 +122,12 @@ function drop(event) {
 
   event.preventDefault();
   const dropZone = event.target.closest(".c-dropzone");
-  dropZone.classList.remove("drag-over");
+  if (dropZone) {
+    dropZone.classList.remove("drag-over");
+  } else {
+    isProcessing = false;
+    return;
+  }
 
   const word = event.dataTransfer.getData("text");
   const correctAnswer = dropZone.dataset.answer;
@@ -197,8 +207,7 @@ function showFinalMessage() {
 
 replayBtn.addEventListener("click", () => {
   const sentence = level2Sentences[currentIndex];
-  const answerText = part1.dataset.answer || part2.dataset.answer || part3.dataset.answer || part4.dataset.answer;
-  speakSentence({ part1: sentence.parts[0].text, part2: sentence.parts[1].text, part3: sentence.parts[2].text, part4: answerText });
+  speakSentence(sentence);
 });
 
 console.log("Initial level2Sentences:", level2Sentences);

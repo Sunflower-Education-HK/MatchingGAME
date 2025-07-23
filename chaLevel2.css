@@ -100,16 +100,17 @@ body {
   top: 47%;
   left: 50%;
   transform: translate(-50%, -50%);
-  font-size: 28px; /* 從 30px 減小，匹配縮小的路軌 */
+  font-size: 28px;
   font-weight: bold;
   color: #333;
-  width: 120px; /* 從 160px 減小，適應縮小的路軌 */
-  height: 50px; /* 從 60px 減小 */
+  width: 150px; 
+  height: 60px; 
   text-align: center;
-  line-height: 50px; /* 匹配 height */
+  line-height: 60px; /* 匹配 height */
   background-color: transparent;
   border: 3px dashed #005555;
   border-radius: 8px;
+  pointer-events: auto; 
 }
 
 .c-dropzone.drag-over {

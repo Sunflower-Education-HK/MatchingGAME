@@ -16,6 +16,19 @@ speechSynthesis.onvoiceschanged = () => {
   availableVoices = speechSynthesis.getVoices();
 };
 
+function setCookie(name, value, days) {
+  const expires = new Date();
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
+  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
+}
+
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop().split(';').shift();
+  return null;
+}
+
 function speakWord(word) {
   const utterance = new SpeechSynthesisUtterance(word);
   utterance.lang = "zh-HK";
@@ -49,7 +62,7 @@ function getNonOverlappingTop() {
 function animateFish(fishGroup, direction = 1) {
   let posX = parseFloat(fishGroup.style.left) || 0;
   const speed = 0.5 + Math.random() * 1.5;
-  const maxX = window.innerWidth - 200;
+  const maxX = window.innerWidth - 40;
 
   function move() {
     posX += speed * direction;
@@ -103,7 +116,7 @@ function initGame() {
     fishGroup.classList.add("fish-group");
 
     const top = getNonOverlappingTop();
-    const left = Math.floor(Math.random() * (window.innerWidth - 200));
+    const left = Math.floor(Math.random() * (window.innerWidth - 40));
     fishGroup.style.top = top + "px";
     fishGroup.style.left = left + "px";
     fishGroup.style.position = "absolute";
@@ -133,6 +146,10 @@ function initGame() {
         fishGroup.style.transition = "opacity 0.8s ease-out";
         fishGroup.style.opacity = "0";
 
+        // Update cookie with correct answer count
+        const currentCorrect = parseInt(getCookie('correctAnswers') || '0') + 1;
+        setCookie('correctAnswers', currentCorrect, 3650); // 10 years expiration
+
         setTimeout(() => {
           fishGroup.remove();
           message.textContent = "";
@@ -152,10 +169,13 @@ function initGame() {
   });
 }
 
+
 function showFinalMessage() {
   message.innerHTML = "";
 
-  const messageBox = document.createElement("div");
+ 
+
+const messageBox = document.createElement("div");
   messageBox.style.display = "flex";
   messageBox.style.flexDirection = "column";
   messageBox.style.alignItems = "center";

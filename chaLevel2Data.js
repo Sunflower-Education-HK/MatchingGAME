@@ -1,5 +1,6 @@
 const level2Sentences = [
   {
+    fullSentence: "哥哥每天早上吃早餐",
     parts: [
       { text: "哥哥", isAnswer: false },
       { text: "每天", isAnswer: false },
@@ -15,6 +16,7 @@ const level2Sentences = [
     }
   },
   {
+    fullSentence: "小狗最喜歡追蝴蝶",
     parts: [
       { text: "小狗", isAnswer: false },
       { text: "最", isAnswer: false },
@@ -30,6 +32,7 @@ const level2Sentences = [
     }
   },
   {
+    fullSentence: "媽媽正在廚房煮飯",
     parts: [
       { text: "媽媽", isAnswer: false },
       { text: "正在", isAnswer: false },

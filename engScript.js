@@ -16,6 +16,18 @@ speechSynthesis.onvoiceschanged = () => {
   availableVoices = speechSynthesis.getVoices();
 };
 
+function getCookie(name) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  return parts.length === 2 ? parts.pop().split(';').shift() : '0';
+}
+
+function setCookie(name, value, days) {
+  const date = new Date();
+  date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+  document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`;
+}
+
 function speakWord(word) {
   const utterance = new SpeechSynthesisUtterance(word);
   utterance.lang = "en-US";
@@ -43,7 +55,7 @@ function getNonOverlappingTop() {
 function animateFish(fishGroup, direction = 1) {
   let posX = parseFloat(fishGroup.style.left) || 0;
   const speed = 0.5 + Math.random() * 1.5;
-  const maxX = window.innerWidth - 200;
+  const maxX = window.innerWidth - 40;
 
   function move() {
     posX += speed * direction;
@@ -97,7 +109,7 @@ function initGame() {
     fishGroup.classList.add("fish-group");
 
     const top = getNonOverlappingTop();
-    const left = Math.floor(Math.random() * (window.innerWidth - 200));
+    const left = Math.floor(Math.random() * (window.innerWidth - 40));
     fishGroup.style.top = top + "px";
     fishGroup.style.left = left + "px";
     fishGroup.style.position = "absolute";
@@ -126,6 +138,10 @@ function initGame() {
         cancelAnimationFrame(fishGroup._animationFrame);
         fishGroup.style.transition = "opacity 0.8s ease-out";
         fishGroup.style.opacity = "0";
+
+        // Update correct count in cookie
+        const currentCount = parseInt(getCookie('enCorrectCount'), 10) || 0;
+        setCookie('enCorrectCount', currentCount + 1, 3650); // 10 years
 
         setTimeout(() => {
           fishGroup.remove();
@@ -188,11 +204,9 @@ function showFinalMessage() {
   message.appendChild(messageBox);
 }
 
-// 🔊 Replay Button
 replayBtn.addEventListener("click", () => {
   const word = targetWordDisplay.dataset.word;
   if (word) speakWord(word);
 });
 
-// 🐟 Start the game
 initGame();
