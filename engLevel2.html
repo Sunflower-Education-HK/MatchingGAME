@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Train Word Match Level 2</title>
+  <link rel="stylesheet" href="engLevel2.css" />
+</head>
+<body>
+  <div class="game-container">
+    <div id="progressTracker">Progress: 0 / 0</div>
+    <div class="top-controls">
+      <button id="replayBtn">🔊 Hear Again</button>
+    </div>
+    <img src="img/train.png" alt="train" class="train" id="train" />
+    <div class="sky">
+      <div class="word-option" data-word=""><img src="img/b.png" /><div class="word-label">Word 1</div></div>
+      <div class="word-option" data-word=""><img src="img/b.png" /><div class="word-label">Word 2</div></div>
+      <div class="word-option" data-word=""><img src="img/b.png" /><div class="word-label">Word 3</div></div>
+      <div class="word-option" data-word=""><img src="img/b.png" /><div class="word-label">Word 4</div></div>
+    </div>
+    <div class="track">
+      <div class="c-car">
+        <img src="img/c.png" id="car1Img" />
+        <div class="c-text" id="part1"></div>
+      </div>
+      <div class="c-car">
+        <img src="img/c.png" id="car2Img" />
+        <div class="c-text" id="part2"></div>
+      </div>
+      <div class="c-car">
+        <img src="img/c.png" id="car3Img" />
+        <div class="c-text" id="part3"></div>
+      </div>
+      <div class="c-car">
+        <img src="img/c.png" id="car4Img" />
+        <div class="c-text" id="part4"></div>
+      </div>
+      <button class="back-button" onclick="location.href='index.html'">Home</button>
+    </div>
+    <div class="message" id="message"></div>
+    <audio id="trainSound" src="sound/train.mp3"></audio>
+    <audio id="failSound" src="sound/fail.mp3"></audio>
+  </div>
+  <script src="engLevel2Data.js"></script>
+  <script src="engLevel2.js"></script>
+</body>
+</html>

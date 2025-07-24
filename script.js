@@ -16,19 +16,6 @@ speechSynthesis.onvoiceschanged = () => {
   availableVoices = speechSynthesis.getVoices();
 };
 
-function setCookie(name, value, days) {
-  const expires = new Date();
-  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
-  document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
-}
-
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop().split(';').shift();
-  return null;
-}
-
 function speakWord(word) {
   const utterance = new SpeechSynthesisUtterance(word);
   utterance.lang = "zh-HK";
@@ -83,11 +70,13 @@ function animateFish(fishGroup, direction = 1) {
   move();
 }
 
-let currentLevel = 1;
+let currentLevel = parseInt(localStorage.getItem('zhLevelProgress')) || 1;
 const maxLevel = 40;
 const usedCorrectWords = [];
 
 function initGame() {
+  localStorage.setItem('zhLevelProgress', currentLevel);
+
   const unusedWords = wordPool.filter(w => !usedCorrectWords.includes(w));
   if (unusedWords.length === 0 || currentLevel > maxLevel) {
     showFinalMessage();
@@ -102,7 +91,7 @@ function initGame() {
   const selectedWords = [...distractorChoices, correctWord];
   const shuffledWords = getRandomWords(selectedWords, 4);
 
-  targetWordDisplay.textContent = ""; // 不顯示文字
+  targetWordDisplay.textContent = "";
   targetWordDisplay.dataset.word = correctWord;
   speakWord(correctWord);
 
@@ -139,43 +128,37 @@ function initGame() {
     animateFish(fishGroup, initialDirection);
 
     fishLabel.addEventListener("click", () => {
+      cancelAnimationFrame(fishGroup._animationFrame);
+      fishGroup.style.transition = "opacity 0.8s ease-out";
+      fishGroup.style.opacity = "0";
+
       if (word === correctWord) {
         message.textContent = "釣到啦！";
         successAudio.play();
-        cancelAnimationFrame(fishGroup._animationFrame);
-        fishGroup.style.transition = "opacity 0.8s ease-out";
-        fishGroup.style.opacity = "0";
 
-        // Update cookie with correct answer count
-        const currentCorrect = parseInt(getCookie('correctAnswers') || '0') + 1;
-        setCookie('correctAnswers', currentCorrect, 3650); // 10 years expiration
-
-        setTimeout(() => {
-          fishGroup.remove();
-          message.textContent = "";
-          currentLevel++;
-          initGame();
-        }, 800);
+        const currentCorrect = parseInt(localStorage.getItem('zhCorrectCount')) || 0;
+        localStorage.setItem('zhCorrectCount', currentCorrect + 1);
       } else {
-        message.textContent = "再試下～";
+        message.textContent = "噢!釣錯左～";
         failAudio.play();
         fishLabel.style.backgroundColor = "#DC143C";
-        setTimeout(() => {
-          fishLabel.style.backgroundColor = "";
-          message.textContent = "";
-        }, 1500);
       }
+
+      setTimeout(() => {
+        fishGroup.remove();
+        fishLabel.style.backgroundColor = "";
+        message.textContent = "";
+        currentLevel++;
+        localStorage.setItem('zhLevelProgress', currentLevel);
+        initGame();
+      }, 800);
     });
   });
 }
 
-
 function showFinalMessage() {
   message.innerHTML = "";
-
- 
-
-const messageBox = document.createElement("div");
+  const messageBox = document.createElement("div");
   messageBox.style.display = "flex";
   messageBox.style.flexDirection = "column";
   messageBox.style.alignItems = "center";
@@ -214,11 +197,9 @@ const messageBox = document.createElement("div");
   message.appendChild(messageBox);
 }
 
-// 🔊 再聽一次
 replayBtn.addEventListener("click", () => {
   const word = targetWordDisplay.dataset.word;
   if (word) speakWord(word);
 });
 
-// 🚀 啟動
 initGame();

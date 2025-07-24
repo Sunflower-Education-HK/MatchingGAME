@@ -9,16 +9,16 @@
 </head>
 
 <body>
-  <div class="scoreboard" id="scoreboard">關卡：1 / 40</div>
   <div class="game-container">
+    <button class="back-button" onclick="location.href='index.html'">主頁</button>
+    <div class="scoreboard" id="scoreboard">關卡：1 / 40</div>
     <div class="speech-bubble" id="targetWord">targetWord</div>
     <button id="replayBtn" class="replay-button">🔊聽一下</button>
     <div class="ocean" id="ocean"></div>
     <div class="message" id="message"></div>
-    <audio id="successAudio" src="success-yue.mp3"></audio>
-    <audio id="failAudio" src="fail-yue.mp3"></audio>
+    <audio id="successAudio" src="sound/success.mp3"></audio>
+    <audio id="failAudio" src="sound/fish-fail.mp3"></audio>
   </div>
-
   <script src="word.js"></script>
   <script src="script.js"></script>
 </body>

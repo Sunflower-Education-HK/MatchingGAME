@@ -16,23 +16,17 @@ speechSynthesis.onvoiceschanged = () => {
   availableVoices = speechSynthesis.getVoices();
 };
 
-function getCookie(name) {
-  const value = `; ${document.cookie}`;
-  const parts = value.split(`; ${name}=`);
-  return parts.length === 2 ? parts.pop().split(';').shift() : '0';
-}
-
-function setCookie(name, value, days) {
-  const date = new Date();
-  date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
-  document.cookie = `${name}=${value};expires=${date.toUTCString()};path=/`;
-}
-
 function speakWord(word) {
   const utterance = new SpeechSynthesisUtterance(word);
   utterance.lang = "en-US";
   utterance.rate = 0.8;
   utterance.pitch = 1;
+
+  const femaleVoice = availableVoices.find(
+    voice => voice.lang === "en-US" && voice.name.toLowerCase().includes("female")
+  );
+  if (femaleVoice) utterance.voice = femaleVoice;
+
   speechSynthesis.speak(utterance);
 }
 
@@ -76,11 +70,13 @@ function animateFish(fishGroup, direction = 1) {
   move();
 }
 
-let currentLevel = 1;
+let currentLevel = parseInt(localStorage.getItem('enLevelProgress')) || 1;
 const maxLevel = 40;
 const usedCorrectWords = [];
 
 function initGame() {
+  localStorage.setItem('enLevelProgress', currentLevel);
+
   const unusedWords = wordPool.filter(w => !usedCorrectWords.includes(w));
   if (unusedWords.length === 0 || currentLevel > maxLevel) {
     showFinalMessage();
@@ -132,75 +128,72 @@ function initGame() {
     animateFish(fishGroup, initialDirection);
 
     fishLabel.addEventListener("click", () => {
+      cancelAnimationFrame(fishGroup._animationFrame);
+      fishGroup.style.transition = "opacity 0.8s ease-out";
+      fishGroup.style.opacity = "0";
+
       if (word === correctWord) {
         message.textContent = "Caught it!";
         successAudio.play();
-        cancelAnimationFrame(fishGroup._animationFrame);
-        fishGroup.style.transition = "opacity 0.8s ease-out";
-        fishGroup.style.opacity = "0";
 
-        // Update correct count in cookie
-        const currentCount = parseInt(getCookie('enCorrectCount'), 10) || 0;
-        setCookie('enCorrectCount', currentCount + 1, 3650); // 10 years
-
-        setTimeout(() => {
-          fishGroup.remove();
-          message.textContent = "";
-          currentLevel++;
-          initGame();
-        }, 800);
+        const currentCorrect = parseInt(localStorage.getItem('enCorrectCount')) || 0;
+        localStorage.setItem('enCorrectCount', currentCorrect + 1);
       } else {
-        message.textContent = "Try again~";
+        message.textContent = "Oops! Try again~";
         failAudio.play();
         fishLabel.style.backgroundColor = "#DC143C";
-        setTimeout(() => {
-          fishLabel.style.backgroundColor = "";
-          message.textContent = "";
-        }, 1500);
       }
+
+      setTimeout(() => {
+        fishGroup.remove();
+        fishLabel.style.backgroundColor = "";
+        message.textContent = "";
+        currentLevel++;
+        localStorage.setItem('enLevelProgress', currentLevel);
+        initGame();
+      }, 800);
     });
   });
 }
 
 function showFinalMessage() {
   message.innerHTML = "";
-
   const messageBox = document.createElement("div");
   messageBox.style.display = "flex";
   messageBox.style.flexDirection = "column";
   messageBox.style.alignItems = "center";
 
   const congratsText = document.createElement("div");
-  congratsText.textContent = "🎉 Congratulations!";
+  congratsText.textContent = "🎉 Congratulations on completing all levels!";
   congratsText.style.fontSize = "28px";
   congratsText.style.marginBottom = "20px";
   congratsText.style.textAlign = "center";
 
-  const nextLevelBtn = document.createElement("button");
-  nextLevelBtn.textContent = "Go to Level 2";
-  nextLevelBtn.style.padding = "10px 20px";
-  nextLevelBtn.style.fontSize = "18px";
-  nextLevelBtn.style.borderRadius = "10px";
-  nextLevelBtn.style.cursor = "pointer";
-  nextLevelBtn.style.backgroundColor = "#4CAF50";
-  nextLevelBtn.style.color = "white";
-  nextLevelBtn.style.border = "none";
-  nextLevelBtn.style.boxShadow = "2px 2px 5px rgba(0,0,0,0.2)";
-  nextLevelBtn.style.transition = "transform 0.2s";
+  const nextBtn = document.createElement("button");
+  nextBtn.textContent = "Next Level";
+  nextBtn.style.padding = "10px 20px";
+  nextBtn.style.fontSize = "18px";
+  nextBtn.style.borderRadius = "10px";
+  nextBtn.style.cursor = "pointer";
+  nextBtn.style.backgroundColor = "#4CAF50";
+  nextBtn.style.color = "white";
+  nextBtn.style.border = "none";
+  nextBtn.style.boxShadow = "2px 2px 5px rgba(0,0,0,0.2)";
+  nextBtn.style.transition = "transform 0.2s";
 
-  nextLevelBtn.addEventListener("mouseover", () => {
-    nextLevelBtn.style.transform = "scale(1.05)";
+  nextBtn.addEventListener("mouseover", () => {
+    nextBtn.style.transform = "scale(1.05)";
   });
-  nextLevelBtn.addEventListener("mouseout", () => {
-    nextLevelBtn.style.transform = "scale(1)";
+  nextBtn.addEventListener("mouseout", () => {
+    nextBtn.style.transform = "scale(1)";
   });
 
-  nextLevelBtn.addEventListener("click", () => {
-    window.location.href = "chaLevel2.html";
+  nextBtn.addEventListener("click", () => {
+    window.location.href = "engLevel2.html";
   });
 
   messageBox.appendChild(congratsText);
-  messageBox.appendChild(nextLevelBtn);
+  messageBox.appendChild(nextBtn);
   message.appendChild(messageBox);
 }
 
