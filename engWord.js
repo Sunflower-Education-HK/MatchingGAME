@@ -1,0 +1,20 @@
+const wordPool = [
+  "angry", "apple", "baby", "backpack", "bad", "bag", "ball", "banana", "bear", "beautiful", "bed", "bee",
+  "bird", "black", "blue", "blueberry", "book", "bored", "bread", "bright", "brown", "brush", "bud", "butter",
+  "butterfly", "cake", "call", "came", "car", "carry", "cat", "catch", "chair", "classmate", "clean", "climb",
+  "close", "cloud", "cold", "come", "cool", "count", "cow", "crayon", "cry", "cute", "dad", "dance", "dark",
+  "day", "desk", "dinosaur", "dirty", "dog", "door", "down", "draw", "drink", "duck", "early", "eat", "egg",
+  "eight", "excited", "fan", "fast", "fat", "feel", "find", "first", "fish", "five", "flower", "fly", "friend",
+  "funny", "get", "give", "glue", "go", "good", "grass", "green", "happy", "hard", "hear", "help", "horse",
+  "hot", "house", "hug", "hungry", "juice", "jump", "kick", "kind", "ladybud", "late", "laugh", "learn",
+  "light", "like", "listen", "little", "long", "look", "loud", "love", "make", "man", "many", "milk", "mom",
+  "moon", "more", "new", "nice", "nine", "old", "once", "one", "open", "orange", "other", "out", "over",
+  "paint", "paper", "park", "peach", "pear", "pen", "people", "pig", "pink", "play", "pull", "purple", "push",
+  "put", "quiet", "rabbit", "rain", "ran", "read", "red", "rice", "ride", "right", "room", "round", "run",
+  "sad", "say", "scared", "school", "scissors", "see", "seven", "shiny", "short", "shout", "show", "sick",
+  "sing", "sit", "six", "sleep", "sleepy", "slide", "slow", "small", "smart", "smell", "smile", "soft", "spell",
+  "stand", "star", "strawberry", "strong", "sun", "surprised", "swim", "swing", "table", "take", "talk",
+  "tall", "teacher", "tell", "ten", "thin", "thing", "think", "thirsty", "three", "throw", "time", "tired",
+  "touch", "toy", "tree", "two", "up", "use", "walk", "want", "warm", "wash", "water", "way", "we", "weak",
+  "well", "white", "window", "write", "year", "yellow", "young"
+];

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+
+<head>
+  <meta charset="UTF-8">
+  <title>語言選擇</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <div class="game-container">
+    <div class="center-container">
+      <button id="resetProgressButton" class="reload-img">
+        <h1 class="c-text">重新開始</h1>
+        <img src="img/reload.png" alt="Reload">
+      </button>
+      <img src="img/fish1.png" alt="魚1" class="fish-img" id="fish1">
+      <div class="button-container">
+        <div class="top-buttons">
+          <div style="display: flex; flex-direction: column; align-items: center;">
+            <button class="record-button" id="recordButton">正確率: 0/40</button>
+            <button class="lang-button" onclick="location.href='chaMatchGame.html'">中文</button>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center;">
+            <button class="record-button" id="engrecordButton">Correct: 0/40</button>
+            <button class="lang-button" onclick="location.href='engMatchGame.html'">English</button>
+          </div>
+          <button class="lang-button" id="level2Button" onclick="location.href='chaLevel2.html'"
+            style="display: none;">第二關</button>
+          <button class="lang-button" id="englevel2Button" onclick="location.href='engLevel2.html'"
+            style="display: none;">Levels 2</button>
+        </div>
+      </div>
+      <img src="img/fish5.png" alt="魚5" class="fish-img" id="fish5">
+      <button id="engResetButton" class="reload-img">
+        <img src="img/reload.png" alt="Reload">
+        <h1 class="c-text">Reset</h1>
+      </button>
+
+    </div>
+  </div>
+  <script src="index.js"></script>
+</body>
+
+</html>

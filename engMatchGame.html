@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en-US">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fishing Game</title>
+  <link rel="stylesheet" href="engstyle.css" />
+</head>
+<body>
+  <div class="game-container">
+    <button class="back-button" onclick="location.href='index.html'">Home</button>
+    <div class="scoreboard" id="scoreboard">Level: 1 / 40</div>
+    <div class="speech-bubble" id="targetWord">targetWord</div>
+    <button id="replayBtn" class="replay-button">🔊 Listen</button>
+    <div class="ocean" id="ocean"></div>
+    <div class="message" id="message"></div>
+    <audio id="successAudio" src="sound/success.mp3"></audio>
+    <audio id="failAudio" src="sound/fish-fail.mp3"></audio>
+  </div>
+  <script src="engWord.js"></script>
+  <script src="engScript.js"></script>
+</body>
+</html>
